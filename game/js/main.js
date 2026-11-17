@@ -202,9 +202,23 @@ window.__NH = {
   get pos() { return [Math.round(G.player.pos.x), Math.round(G.player.pos.z)]; },
   get speedKmh() { return Math.round(G.speedKmh || 0); },
   get inCar() { return G.driving.inCar; },
+  get cops() { return G.police.cops.length + G.police.copCars.length; },
+  get copPos() {
+    const c = G.police.cops[0] || G.police.copCars[0];
+    return c ? [Math.round(c.pos.x), Math.round(c.pos.z)] : null;
+  },
   ready: false,
   start: startGame,
 };
+
+// test-only hooks, gated behind ?debug=1 (never used by the game itself)
+if (params.get('debug') === '1') {
+  window.__NH.teleport = (x, z) => {
+    G.player.pos.set(x, 0, z);
+    G.player.group.position.copy(G.player.pos);
+  };
+  window.__NH.setHeat = (n) => { G.police.heat = n; };
+}
 
 // ---- main loop ----
 const clock = new THREE.Clock();
