@@ -171,12 +171,13 @@ function applyShot() {
     G.driving.car.angle = 0;
     G.police.addHeat(78, G);
     G.police.update(0.1, G);
-    // pull one police car into frame, 18 m behind the getaway car
+    // put one police car in frame: ahead-right, facing the getaway car
     const pc = G.police.copCars[0];
     if (pc) {
-      pc.pos.set(G.player.pos.x + 5, 0, G.player.pos.z - 18);
-      pc.heading = 0; pc.speed = 22;
+      pc.pos.set(G.player.pos.x + 14, 0, G.player.pos.z + 28);
+      pc.heading = 2.8; pc.speed = 0;
       pc.mesh.position.copy(pc.pos);
+      pc.mesh.rotation.y = pc.heading;
     }
     G.hud.setObjective('Lose the cops — 3 stars and climbing');
   } else if (SHOT === 'street') {
