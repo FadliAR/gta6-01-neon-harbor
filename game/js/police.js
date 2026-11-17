@@ -78,11 +78,14 @@ export class Police {
         pc.pos.x += Math.sin(pc.heading) * pc.speed * dt;
         pc.pos.z += Math.cos(pc.heading) * pc.speed * dt;
       }
-      // ram the player's car
+      // ram the player's car (effect gated 0.4 s so it cannot machine-gun)
       if (G.driving.inCar && dist < 4.2) {
         G.driving.car.speed *= 0.82;
         G.player.hurt(6 * dt * 10);
-        G.effects.crash(pc.pos, G);
+        if (G.time - (G.lastCrashT || -99) > 0.4) {
+          G.lastCrashT = G.time;
+          G.effects.crash(pc.pos, G);
+        }
       }
       pc.mesh.position.copy(pc.pos);
       pc.mesh.rotation.y = pc.heading;

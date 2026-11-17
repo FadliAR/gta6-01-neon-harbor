@@ -177,19 +177,20 @@ export function buildCity(scene, rng) {
     colliders,
     streets: STREETS,
     plaza: new THREE.Vector3(0, 0, 0),
-    spirePos: new THREE.Vector3(0, 0, 0),
+    plazaEdge: new THREE.Vector3(14, 0, 14),
+    spirePos: new THREE.Vector3(10, 0, 10),
     playerSpawn: new THREE.Vector3(14, 0, 24),
-    dockPos: new THREE.Vector3(0, 0, CFG.waterZ + 26),   // pier end
+    dockPos: new THREE.Vector3(0, 0, 186),   // pier start — reachable on foot
     marinaPos: new THREE.Vector3(-56, 0, CFG.waterZ - 8),
     northGatePos: new THREE.Vector3(0, 0, -196),
     westGatePos: new THREE.Vector3(-196, 0, 0),
     coinSpots: [
-      [28, -28], [-28, 28], [84, -84], [-84, -84], [140, 28], [-140, -28],
-      [28, 140], [-28, -140], [84, 84], [-112, 112],
+      [0, -56], [56, 0], [-56, 112], [112, -112], [-112, 56],
+      [0, 168], [168, -56], [-168, 0], [56, 168], [-112, -168],
     ].map(([x, z]) => new THREE.Vector3(x, 1, z)),
     parkCarSpots: [
-      [20, -56, 0], [-20, 56, Math.PI], [60, -20, Math.PI / 2], [-60, 20, -Math.PI / 2],
-      [116, -20, 0], [-116, 20, Math.PI], [20, 116, Math.PI / 2], [-20, -116, -Math.PI / 2],
+      [64, -56, 0], [-48, 56, Math.PI], [56, -48, Math.PI / 2], [-56, 48, -Math.PI / 2],
+      [120, -112, 0], [-104, 112, Math.PI], [64, 112, Math.PI / 2], [-48, -112, -Math.PI / 2],
     ].map(([x, z, a]) => ({ pos: new THREE.Vector3(x, 0, z), angle: a })),
   };
 }

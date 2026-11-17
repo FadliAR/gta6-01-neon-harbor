@@ -30,7 +30,7 @@ export class Driving {
     mesh.position.copy(parkedCar.pos);
     mesh.rotation.y = parkedCar.angle;
     this.scene.add(mesh);
-    this.car = { mesh, pos: parkedCar.pos.clone(), angle: parkedCar.angle, speed: 0 };
+    this.car = { mesh, pos: parkedCar.pos.clone(), angle: parkedCar.angle, speed: 0, color: parkedCar.color };
     this.inCar = true;
     return this.car;
   }
@@ -42,7 +42,7 @@ export class Driving {
     G.player.pos.copy(out); G.player.pos.y = 0;
     G.player.group.position.copy(out);
     // re-park the car so it can be stolen again (round-1 bug fix: exit left it un-enterable)
-    const parked = { mesh: this.car.mesh, pos: this.car.pos.clone(), angle: this.car.angle, taken: false, color: 0xd21f3c };
+    const parked = { mesh: this.car.mesh, pos: this.car.pos.clone(), angle: this.car.angle, taken: false, color: this.car.color };
     parked.mesh.visible = true;
     G.parked.push(parked);
     this.car = null;
@@ -65,11 +65,14 @@ export class Driving {
     const prev = c.pos.clone();
     c.pos.set(nx, 0, nz);
     if (collideCircle(c.pos, 2.2, G.colliders)) {
-      // hit a building: scrape speed, keep position pushed out
+      // hit a building: scrape speed, keep position pushed out (0.5 s cooldown)
       c.speed *= -0.25;
-      G.effects.crash(c.pos, G);
-      G.audio.crash();
-      G.player.hurt(4);
+      if (G.time - (G.lastCrashT || -99) > 0.5) {
+        G.lastCrashT = G.time;
+        G.effects.crash(c.pos, G);
+        G.audio.crash();
+        G.player.hurt(4);
+      }
     }
     clampToCity(c.pos);
     // bump traffic cars

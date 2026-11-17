@@ -58,13 +58,12 @@ export class Effects {
       })) hitAny = true;
     }
     for (const c of G.police.cops) {
-      tryHit(c.pos, 0.6, (dir) => {
+      if (tryHit(c.pos, 0.6, (dir) => {
         c.pos.addScaledVector(dir, 2);
         this.burst(c.pos, 0x3a6bff, G, 8);
         G.police.addHeat(CFG.heatPunch, G);
         G.lastCrimeT = G.time;
-      });
-      hitAny = true;
+      })) hitAny = true;
     }
     if (hitAny) {
       this.hitStop = 0.07;

@@ -6,7 +6,7 @@ const JOBS = [
   {
     name: 'Harbor Pickup',
     brief: 'Pick up the package at the pier, then bring it back to the plaza.',
-    points: ['dockPos', 'plaza'],
+    points: ['dockPos', 'plazaEdge'],
     pay: 200,
   },
   {
