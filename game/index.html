@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEON HARBOR — open-world crime game</title>
+<link rel="stylesheet" href="./css/style.css">
+<script type="importmap">
+{ "imports": { "three": "./vendor/three.min.js" } }
+</script>
+</head>
+<body>
+<div id="app">
+  <canvas id="scene"></canvas>
+  <div id="hud">
+    <div id="topleft">
+      <div id="stars"></div>
+      <div id="cash">$0</div>
+      <div id="health"><div id="healthbar"></div></div>
+    </div>
+    <div id="objective">Welcome to Neon Harbor</div>
+    <div id="checklist"></div>
+    <canvas id="minimap" width="180" height="180"></canvas>
+    <div id="speedo">0<span>km/h</span></div>
+    <div id="toast"></div>
+  </div>
+  <div id="title" class="overlay">
+    <h1>NEON<br>HARBOR</h1>
+    <p class="tag">An open-world crime game. Steal cars. Run jobs. Dodge the law.</p>
+    <button id="startBtn">START ENGINE</button>
+    <p class="keys">WASD move &middot; SHIFT run &middot; SPACE jump &middot; E enter car &middot;
+    F punch &middot; P pause &middot; M mute</p>
+  </div>
+  <div id="pause" class="overlay hidden">
+    <h2>PAUSED</h2>
+    <p>Press P to resume</p>
+    <button id="resumeBtn">RESUME</button>
+  </div>
+  <div id="busted" class="overlay hidden">
+    <h2>BUSTED</h2>
+    <p>The Harbor PD got you. Bail $50.</p>
+    <button id="bustedBtn">BACK ON THE STREETS</button>
+  </div>
+  <div id="wasted" class="overlay hidden">
+    <h2>WASTED</h2>
+    <p>You blacked out. The medics took $100.</p>
+    <button id="wastedBtn">WAKE UP</button>
+  </div>
+  <div id="complete" class="overlay hidden">
+    <h2>CHAIN COMPLETE</h2>
+    <p id="completeText"></p>
+    <button id="againBtn">RUN IT AGAIN</button>
+  </div>
+</div>
+<script type="module" src="./js/main.js"></script>
+</body>
+</html>

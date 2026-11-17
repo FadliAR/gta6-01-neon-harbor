@@ -1,0 +1,47 @@
+/* NEON HARBOR — HUD + overlays. Neon-on-dark, monospace, no external assets. */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #070b16;
+  font-family: "Courier New", monospace; color: #e8f4ff; }
+#app { position: fixed; inset: 0; }
+#scene { display: block; width: 100%; height: 100%; }
+#hud { position: absolute; inset: 0; pointer-events: none; }
+#topleft { position: absolute; top: 14px; left: 16px; }
+#stars { font-size: 26px; letter-spacing: 4px; color: #ffd23f;
+  text-shadow: 0 0 8px rgba(255, 210, 63, .8); min-height: 32px; }
+#stars .off { color: #3a4666; text-shadow: none; }
+#cash { font-size: 26px; font-weight: bold; color: #39ff88;
+  text-shadow: 0 0 10px rgba(57, 255, 136, .7); margin-top: 2px; }
+#health { width: 150px; height: 10px; background: #1c2440; border: 1px solid #4a5a8a;
+  margin-top: 6px; }
+#healthbar { height: 100%; width: 100%; background: linear-gradient(90deg, #ff4d6d, #ff8a5c); }
+#objective { position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+  font-size: 17px; font-weight: bold; color: #fff; background: rgba(7, 11, 22, .72);
+  border: 1px solid #39c6ff; padding: 8px 18px; border-radius: 4px;
+  text-shadow: 0 0 8px rgba(57, 198, 255, .8); white-space: nowrap; }
+#checklist { position: absolute; top: 64px; right: 16px; text-align: right;
+  font-size: 14px; line-height: 1.7; color: #bfe9ff; }
+#checklist .done { color: #39ff88; text-decoration: line-through; }
+#checklist .now { color: #ffd23f; font-weight: bold; }
+#minimap { position: absolute; left: 16px; bottom: 16px; border: 2px solid #39c6ff;
+  border-radius: 6px; background: rgba(7, 11, 22, .85); }
+#speedo { position: absolute; right: 20px; bottom: 18px; font-size: 34px; font-weight: bold;
+  color: #fff; text-shadow: 0 0 12px rgba(57, 198, 255, .9); display: none; }
+#speedo span { font-size: 14px; margin-left: 4px; color: #bfe9ff; }
+#toast { position: absolute; bottom: 210px; left: 50%; transform: translateX(-50%);
+  font-size: 18px; font-weight: bold; color: #ffd23f;
+  text-shadow: 0 0 10px rgba(255, 210, 63, .9); opacity: 0; transition: opacity .3s; }
+.overlay { position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 18px;
+  background: radial-gradient(ellipse at center, rgba(10, 16, 36, .55), rgba(4, 6, 14, .92));
+  text-align: center; pointer-events: auto; }
+.overlay.hidden { display: none; }
+.overlay h1 { font-size: 84px; line-height: .95; letter-spacing: 6px; color: #39c6ff;
+  text-shadow: 0 0 24px rgba(57, 198, 255, .9), 0 0 60px rgba(255, 77, 109, .6); }
+.overlay h2 { font-size: 56px; letter-spacing: 8px; color: #ff4d6d;
+  text-shadow: 0 0 24px rgba(255, 77, 109, .9); }
+.overlay .tag { font-size: 17px; color: #bfe9ff; max-width: 560px; }
+.overlay .keys { font-size: 13px; color: #7d8db3; }
+.overlay button { font-family: inherit; font-size: 20px; font-weight: bold; letter-spacing: 3px;
+  color: #061018; background: #39ff88; border: none; padding: 14px 34px; cursor: pointer;
+  border-radius: 4px; box-shadow: 0 0 18px rgba(57, 255, 136, .7); }
+.overlay button:hover { background: #7dffb0; }
