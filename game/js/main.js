@@ -25,8 +25,8 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0a1024);
 scene.fog = new THREE.Fog(0x070b16, 130, 400);
 const camera = new THREE.PerspectiveCamera(62, innerWidth / innerHeight, 0.1, 900);
-scene.add(new THREE.HemisphereLight(0x8fb8ff, 0x1a2028, 0.9));
-const sun = new THREE.DirectionalLight(0xffe0b3, 1.1);
+scene.add(new THREE.HemisphereLight(0x8fb8ff, 0x1a2028, 1.25));
+const sun = new THREE.DirectionalLight(0xffe0b3, 1.5);
 sun.position.set(120, 180, 60);
 scene.add(sun);
 
@@ -171,16 +171,25 @@ function applyShot() {
     G.driving.car.angle = 0;
     G.police.addHeat(78, G);
     G.police.update(0.1, G);
+    // pull one police car into frame, 18 m behind the getaway car
+    const pc = G.police.copCars[0];
+    if (pc) {
+      pc.pos.set(G.player.pos.x + 5, 0, G.player.pos.z - 18);
+      pc.heading = 0; pc.speed = 22;
+      pc.mesh.position.copy(pc.pos);
+    }
     G.hud.setObjective('Lose the cops — 3 stars and climbing');
   } else if (SHOT === 'street') {
-    G.player.pos.set(28, 0, -28);
+    G.player.pos.set(20, 0, 60);
+    G.player.heading = Math.PI; // face north: plaza + Spire + downtown in one frame
     G.hud.setObjective('Downtown Neon Harbor — on foot');
   } else if (SHOT === 'docks') {
-    G.player.pos.set(6, 0, 196);
+    G.player.pos.set(0, 0, 168);
+    G.player.heading = 0; // face south: pier + beacon + water ahead
     G.missions.start(G);
     G.hud.setObjective('Harbor Pickup: reach the pier beacon');
   } else if (SHOT === 'spire') {
-    G.player.pos.set(30, 0, 60);
+    G.player.pos.set(14, 0, 24);
     G.hud.setObjective('The Harbor Spire — heart of Neon Harbor');
   }
   G.player.group.position.copy(G.player.pos);
@@ -260,7 +269,8 @@ function frame() {
   if (G.player.health < 100) G.player.health = Math.min(100, G.player.health + 2 * dt);
   if (G.player.health <= 0) G.wasted();
   // camera + audio + HUD
-  G.cam.update(dt, G.player.pos, G.driving.inCar ? G.driving.car.angle : G.player.heading, G.driving.inCar, G.speedKmh);
+  if (SHOT === 'spire') G.cam.wideShot(new THREE.Vector3(0, 0, 0));
+  else G.cam.update(dt, G.player.pos, G.driving.inCar ? G.driving.car.angle : G.player.heading, G.driving.inCar, G.speedKmh);
   G.audio.setEngine(G.driving.inCar ? Math.abs(G.driving.car.speed) / CFG.carMaxSpeed : 0);
   G.hud.setCash(G.cash);
   G.hud.setHealth(G.player.health);

@@ -32,6 +32,7 @@ export class Driving {
     this.scene.add(mesh);
     this.car = { mesh, pos: parkedCar.pos.clone(), angle: parkedCar.angle, speed: 0, color: parkedCar.color };
     this.inCar = true;
+    G.player.group.visible = false; // driver sits inside; the on-foot figure must not poke through the roof
     return this.car;
   }
 
@@ -47,6 +48,7 @@ export class Driving {
     G.parked.push(parked);
     this.car = null;
     this.inCar = false;
+    G.player.group.visible = true;
   }
 
   update(dt, input, G) {
