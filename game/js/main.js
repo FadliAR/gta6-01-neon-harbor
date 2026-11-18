@@ -13,6 +13,7 @@ import { Hud } from './hud.js';
 import { FollowCamera } from './camera.js';
 import { AudioSys } from './audio.js';
 import { Effects } from './effects.js';
+import { initTouch } from './touch.js';
 
 const params = new URLSearchParams(location.search);
 const SHOT = params.get('shot'); // chase | street | docks | spire (screenshots)
@@ -54,6 +55,7 @@ G.hud = new Hud();
 G.cam = new FollowCamera(camera);
 G.audio = new AudioSys();
 G.effects = new Effects(scene);
+initTouch(G); // no-op on desktop; adds joystick/buttons on touch devices
 
 G.busted = () => {
   if (G.state !== 'playing') return;
