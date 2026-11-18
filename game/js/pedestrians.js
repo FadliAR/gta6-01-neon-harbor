@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { CFG } from './config.js';
 import { collideCircle } from './city.js';
+import { makePerson } from './look.js';
 
 const SHIRTS = [0x39c6ff, 0xffd23f, 0x8a5cf6, 0x22b573, 0xff7a1a, 0xe8e8e8, 0xff8ab0];
 
@@ -11,23 +12,13 @@ export class Pedestrians {
     this.streets = streets;
     this.list = [];
     for (let i = 0; i < CFG.pedCount; i++) {
-      const g = new THREE.Group();
-      const shirt = new THREE.MeshStandardMaterial({ color: rng.pick(SHIRTS), roughness: 0.85 });
-      const skin = new THREE.MeshStandardMaterial({ color: 0xc98a5a, roughness: 0.8 });
-      const body = new THREE.Mesh(new THREE.BoxGeometry(0.85, 1.05, 0.45), shirt);
-      body.position.y = 1.1;
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.32, 10, 8), skin);
-      head.position.y = 1.92;
-      const legL = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.85, 0.36),
-        new THREE.MeshStandardMaterial({ color: 0x1c2440 }));
-      legL.position.set(-0.22, 0.42, 0);
-      const legR = legL.clone(); legR.position.x = 0.22;
-      g.add(body, head, legL, legR);
+      const rig = makePerson({ shirt: rng.pick(SHIRTS), pants: 0x1c2440, skin: 0xc98a5a });
+      const g = rig.group;
       const pos = this.randomSidewalkSpot();
       g.position.copy(pos);
       scene.add(g);
       this.list.push({
-        group: g, legL, legR, pos, heading: rng.range(0, Math.PI * 2),
+        group: g, legL: rig.legL, legR: rig.legR, armL: rig.armL, armR: rig.armR, pos, heading: rng.range(0, Math.PI * 2),
         state: 'walk', target: this.randomSidewalkSpot(), speed: rng.range(1.2, 2.2),
         idleT: 0, phase: rng.range(0, 6), hp: 100, fleeT: 0,
       });
@@ -84,6 +75,7 @@ export class Pedestrians {
       p.group.rotation.y = p.heading;
       const swing = speed > 0 ? Math.sin(p.phase) * 0.5 : 0;
       p.legL.rotation.x = swing; p.legR.rotation.x = -swing;
+      p.armL.rotation.x = swing * 0.7; p.armR.rotation.x = -swing * 0.7;
     }
   }
 }

@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { CFG } from './config.js';
 import { makeCarMesh } from './vehicles.js';
 import { collideCircle } from './city.js';
+import { makePerson } from './look.js';
 
 export class Police {
   constructor(scene) {
@@ -96,26 +97,21 @@ export class Police {
   }
 
   spawnCop(G) {
-    const g = new THREE.Group();
+    const rig = makePerson({ shirt: 0x1a2a55, pants: 0x1a2a55, skin: 0xd9a066 });
+    const g = rig.group;
     const navy = new THREE.MeshStandardMaterial({ color: 0x1a2a55, roughness: 0.85 });
-    const body = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.1, 0.5), navy);
-    body.position.y = 1.15;
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.34, 10, 8),
-      new THREE.MeshStandardMaterial({ color: 0xd9a066 }));
-    head.position.y = 2.0;
-    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.16, 10), navy);
-    cap.position.y = 2.22;
-    const legL = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.9, 0.38), navy);
-    legL.position.set(-0.24, 0.45, 0);
-    const legR = legL.clone(); legR.position.x = 0.24;
-    g.add(body, head, cap, legL, legR);
+    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.34, 0.16, 10), navy);
+    cap.position.y = 2.24; cap.castShadow = true;
+    const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.05, 10), navy);
+    brim.position.set(0, 2.17, 0.08);
+    g.add(cap, brim);
     const a = G.rng.range(0, Math.PI * 2);
     const pos = G.player.pos.clone().add(new THREE.Vector3(Math.sin(a) * 55, 0, Math.cos(a) * 55));
     pos.x = THREE.MathUtils.clamp(pos.x, -195, 195);
     pos.z = THREE.MathUtils.clamp(pos.z, -195, CFG.waterZ - 4);
     g.position.copy(pos);
     this.scene.add(g);
-    this.cops.push({ group: g, legL, legR, pos, heading: 0, grabT: 0, phase: 0 });
+    this.cops.push({ group: g, legL: rig.legL, legR: rig.legR, pos, heading: 0, grabT: 0, phase: 0 });
   }
 
   removeCop(c) { this.scene.remove(c.group); }

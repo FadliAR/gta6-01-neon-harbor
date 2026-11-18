@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { CFG } from './config.js';
 import { collideCircle, clampToCity } from './city.js';
+import { makePerson } from './look.js';
 
 export class Player {
   constructor(scene) {
@@ -13,20 +14,15 @@ export class Player {
     this.punchCd = 0;
     this.punchAnim = 0;
     this.walkPhase = 0;
-    this.group = new THREE.Group();
-    const skin = new THREE.MeshStandardMaterial({ color: 0xd9a066, roughness: 0.8 });
-    const shirt = new THREE.MeshStandardMaterial({ color: 0xff4d6d, roughness: 0.8 });
-    const pants = new THREE.MeshStandardMaterial({ color: 0x1c2440, roughness: 0.9 });
-    this.body = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.1, 0.5), shirt);
-    this.body.position.y = 1.15;
-    this.head = new THREE.Mesh(new THREE.SphereGeometry(0.34, 10, 8), skin);
-    this.head.position.y = 2.0;
-    this.legL = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.9, 0.4), pants);
-    this.legL.position.set(-0.24, 0.45, 0);
-    this.legR = this.legL.clone(); this.legR.position.x = 0.24;
-    this.armR = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.9, 0.32), shirt);
-    this.armR.position.set(0.6, 1.2, 0);
-    this.group.add(this.body, this.head, this.legL, this.legR, this.armR);
+    // capsule rig with pivoted limbs (both arms now — the old figure had one)
+    const rig = makePerson({ shirt: 0xff4d6d, pants: 0x1c2440, skin: 0xd9a066 });
+    this.group = rig.group;
+    this.body = rig.body;
+    this.head = rig.head;
+    this.legL = rig.legL;
+    this.legR = rig.legR;
+    this.armL = rig.armL;
+    this.armR = rig.armR;
     this.group.position.copy(this.pos);
     scene.add(this.group);
   }
@@ -72,9 +68,10 @@ export class Player {
       G.effects.punch(this, G);
       G.audio.punch();
     }
-    // animate
+    // animate (limbs are joint pivots now, so the swing pivots at hip/shoulder)
     const swing = moving ? Math.sin(this.walkPhase) * 0.55 : 0;
     this.legL.rotation.x = swing; this.legR.rotation.x = -swing;
+    this.armL.rotation.x = swing * 0.7;
     this.armR.rotation.x = this.punchAnim > 0 ? -1.9 * this.punchAnim : -swing * 0.7;
     this.group.position.copy(this.pos);
     this.group.rotation.y = this.heading;

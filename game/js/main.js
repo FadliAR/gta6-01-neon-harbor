@@ -22,14 +22,28 @@ const canvas = document.getElementById('scene');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.12;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0a1024);
-scene.fog = new THREE.Fog(0x070b16, 130, 400);
+scene.fog = new THREE.Fog(0x16223c, 150, 560);
 const camera = new THREE.PerspectiveCamera(62, innerWidth / innerHeight, 0.1, 900);
 scene.add(new THREE.HemisphereLight(0x8fb8ff, 0x1a2028, 1.25));
 const sun = new THREE.DirectionalLight(0xffe0b3, 1.5);
 sun.position.set(120, 180, 60);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+// tight frustum that follows the player (set in the frame loop): crisper
+// shadows where the action is, and far fewer casters in the shadow pass
+sun.shadow.camera.left = -95; sun.shadow.camera.right = 95;
+sun.shadow.camera.top = 95; sun.shadow.camera.bottom = -95;
+sun.shadow.camera.near = 10; sun.shadow.camera.far = 520;
+sun.shadow.bias = -0.0005;
+sun.shadow.normalBias = 0.6;
 scene.add(sun);
+scene.add(sun.target);
 
 // shared game state — every subsystem reads/writes this one object
 const G = {
@@ -240,6 +254,10 @@ let titleAngle = 0;
 function frame() {
   requestAnimationFrame(frame);
   const dt = Math.min(clock.getDelta(), 0.05);
+  // shadow frustum follows the player so shadows stay crisp nearby
+  sun.position.set(G.player.pos.x + 120, 180, G.player.pos.z + 60);
+  sun.target.position.set(G.player.pos.x, 0, G.player.pos.z);
+  sun.target.updateMatrixWorld();
   if (G.state === 'title') {
     titleAngle += dt * 0.05;
     const c = new THREE.Vector3(Math.sin(titleAngle) * 120, 70, Math.cos(titleAngle) * 120);

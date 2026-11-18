@@ -1,6 +1,7 @@
 // NEON HARBOR — 3 chained jobs, 5 checkpoints, one 150 s clock, $950 total.
 import * as THREE from 'three';
 import { CFG } from './config.js';
+import { glowSprite } from './look.js';
 
 const JOBS = [
   {
@@ -44,6 +45,9 @@ export class Missions {
     );
     ring.rotation.x = Math.PI / 2; ring.position.y = 0.3;
     this.beacon.add(cyl, ring);
+    const beaconGlow = glowSprite(0xffd23f, 11, 0.4);
+    beaconGlow.position.y = 5;
+    this.beacon.add(beaconGlow);
     this.beacon.visible = false;
     scene.add(this.beacon);
     // cash pickups
